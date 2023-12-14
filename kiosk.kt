@@ -12,6 +12,7 @@ fun main() {
     val mainDr = Drinks()
     val mainBe = Beer()
 
+
     while (true) {
 
         when (menuPan) {
@@ -23,10 +24,12 @@ fun main() {
                 println("\u001B[31m잘못된 입력값입니다. 숫자로 다시 입력해주세요!\u001B[0m")
                 menuPan = kiosk.menuKiosk()
             }
+
             0 -> {
                 println("\u001B[31m프로그램이 종료되었습니다.\u001B[0m")
                 exitProcess(0)
             }
+
             else -> {
                 println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
                 menuPan = kiosk.menuKiosk()
@@ -56,17 +59,20 @@ open class Kiosk {
             println("\u001B[32m아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\u001B[0m")
             println("\u001B[32m[ Menu ]\u001B[0m")
             println(
-                        "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
+                "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
                         "2. Forzen Custard  | 매장에서 신선하게 만드는 아이스크림\n" +
                         "3. Drinks          | 매장에서 직접 만드는 음료\n" +
                         "4. Beer            | 뉴욕 브루클린 브루어리에서 양조한 맥주\n" +
                         "0. exit            | 프로그램 종료\n"
             )
             return readln().toInt()
-        }catch (e:NumberFormatException){
+        } catch (e: NumberFormatException) {
             return 9
         }
     }
+
+    // 예외처리를 하려고 이를 처음에는 프린트를 해서 넘겨주려고 했는데... 위에 else 부분에 걸려 추가적으로 프린트 메시지가 나와서
+    // 번호를 추가적으로 넣어 경고메시지와 메인 메뉴를 자동으로 나오게 했다
 
     fun initKiosk() {
         burgerMenu.add(Hamburger(1, "ShackBurger", 6900, "토마토, 양상추, 쉑소스가 토핑된 치즈버거"))
@@ -98,6 +104,8 @@ open class Kiosk {
         beerMenu.add(Beer(0, "뒤로가기", 0, "다시 메인 메뉴로 이동한다"))
     }
 }
+
+// arraylist을 이용해서 각 메뉴들을 배열하여 데이터화해서 가져오는 식으로 했다. 이것들을 일일히 다 적어내면 하드 코딩이므로,,,
 abstract class AbstractMenu {
     abstract fun choose(burgerMenus: ArrayList<AbstractMenu>): Int
     var Number = 0
@@ -107,6 +115,9 @@ abstract class AbstractMenu {
     val bagList = arrayListOf<String>()
 
 }
+// 추상화 클래스는 범위만 정해주는 거기 때문에 텍스트를 웬만해선 추가적으로 넣지 않는다.
+//다형성으로 burgerMenus: ArrayList<AbstractMenu>을 넣어주면 된다고 했다.
+// bagList을 만들어서 장바구니를 만들어줌
 
 class Hamburger() : AbstractMenu() {
     constructor(Number: Int, Name: String, Price: Int, Content: String) : this() {
@@ -115,7 +126,9 @@ class Hamburger() : AbstractMenu() {
         super.Price = Price
         super.Content = Content
     }
- 
+    //super은 상속받는 부모클래스다
+    // 이런식으로 하는것은 부 생성자인데 이는 하나이상을 만들 수 있다. 개인 별로 다 다르기 때문에 이건 따로 추상화 객체로 뺄 수 없다.
+
     override fun choose(burgerMenus: ArrayList<AbstractMenu>): Int {
         extracted(burgerMenus)
         return 0
@@ -123,53 +136,79 @@ class Hamburger() : AbstractMenu() {
 
     private fun extracted(burgerMenus: ArrayList<AbstractMenu>) {
         while (true) {
-            println("\u001B[32m 햄버거의 메뉴를 골라 숫자를 입력해주세요\u001B[0m")
-            for (b in burgerMenus) {
-                println(b.Number)
-                println(b.Name)
-                println(b.Price)
-                println("-------------------------------------------")
-                println(b.Content)
-                println("-------------------------------------------")
+            try {
+                println("\u001B[32m 햄버거의 메뉴를 골라 숫자를 입력해주세요\u001B[0m")
+                for (b in burgerMenus) {
+                    println(b.Number)
+                    println(b.Name)
+                    println(b.Price)
+                    println("-------------------------------------------")
+                    println(b.Content)
+                    println("-------------------------------------------")
+                }
+                // 객체가 다 달라서 이건 클래스를 따로 빼서 묶을 수가 없다.
+                //다음에는 객체가 같을 때 묶는거 해봐야겠다(컨트롤 알트 m)
+
+                var Number = readln().toInt()
+
+                if (Number == 0) {
+                    println("뒤로 가기를 선택하셨습니다")
+                    break
+                } else if (Number in (1..5)) {
+                    println("${Number} | ${burgerMenus[Number - 1].Name} |${burgerMenus[Number - 1].Price}원 | ${burgerMenus[Number - 1].Content} | 위 메뉴를 장바구니에 추가하시겠습니까?")
+                    println("네 , 아니오")
+                    var answer = readln().toString()
+                    if (answer == "네") {
+                        println("\u001B[32m[ Orders ]\u001B[0m")
+                        var bag = "${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}"
+                        bagList.add(bag)
+                        // 장바구니에 담아줌
+                        println("${Number} | ${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}원 | ${burgerMenus[Number - 1].Content}| (이/가) 장바구니에 추가되었습니다.")
+                        println("----------------------------------------------------------------------------------------------")
+                        println("\u001B[32m[ Total ]\u001B[0m ${burgerMenus[Number - 1].Price}원")
+
+                        println("1. 지불 2. 취소")
+                        var select = readln().toInt()
+                        var bags = "${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}"
+                        if (select == 2) {
+                            bagList.remove(bags)
+                            println("취소되었습니다. 감사합니다.")
+                            exitProcess(0)
+                        } else if (select == 1) {
+                            println("지불하기를 선택하셨습니다")
+                        } else {
+                            println("\u001B[31m잘못된 번호를 입력하셨어요. 처음부터 다시 선택해주세요!\u001B[0m")
+                            break
+                        }
+
+                        println("지불할 금액을 작성하세요")
+                        var myPrice = readln().toInt()
+                        myPrice -= burgerMenus[Number - 1].Price
+                        var balance = burgerMenus[Number - 1].Price
+
+                        if (myPrice >= Price) {
+                            println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                        } else {
+                            println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                            exitProcess(0)
+                        }
+
+                        println("1. 바로 주문하기   2. 메뉴판 다시 보기")
+                        var choice = readln().toInt()
+                        if (choice == 1) {
+                            println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
+                            exitProcess(0)
+                        } else 0
+                    } else println("다른 메뉴를 선택해주세요.")
+
+                } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
+            } catch (e: NumberFormatException) {
+                return println("\u001B[31m잘못된 입력값입니다. 처음부터 다시 입력해주세요\u001B[0m")
             }
-
-            var Number = readln().toInt()
-
-            if (Number == 0) {
-                println("뒤로 가기를 선택하셨습니다")
-                break
-            } else if (Number in (1..5)) {
-                println("${Number} | ${burgerMenus[Number - 1].Name} |${burgerMenus[Number - 1].Price}원 | ${burgerMenus[Number - 1].Content} | 위 메뉴를 장바구니에 추가하시겠습니까?")
-                println("네 , 아니오")
-                var answer = readln().toString()
-                if (answer == "네") {
-                    println("\u001B[32m[ Orders ]\u001B[0m")
-                    var bag = "${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}"
-                    bagList.add(bag)
-                    println("${Number} | ${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}원 | ${burgerMenus[Number - 1].Content}| (이/가) 장바구니에 추가되었습니다.")
-                    println("----------------------------------------------------------------------------------------------")
-                    println("\u001B[32m[ Total ]\u001B[0m ${burgerMenus[Number - 1].Price}원")
-
-                    println("지불할 금액을 작성하세요")
-                    var myPrice = readln().toInt()
-                    myPrice -= burgerMenus[Number - 1].Price
-                    var balance = burgerMenus[Number - 1].Price
-
-                    if (myPrice>= Price){
-                        println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
-                    }else println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
-
-                    println("1. 바로 주문하기   2. 메뉴판 다시 보기")
-                    var choice = readln().toInt()
-                    if(choice == 1){
-                        println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
-                        exitProcess(0)
-                    }else 0
-                } else println("다른 메뉴를 선택해주세요.")
-
-            } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
         }
     }
+//각 수들을 넘어오게 헀다. 결국 각 메뉴스에서 담아져서 오는거니까
+
 }
 
 open class Ice() : AbstractMenu() {
@@ -209,25 +248,40 @@ open class Ice() : AbstractMenu() {
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m ${iceMenus[Number - 1].Price}원")
 
-                    println("지불할 금액을 작성하세요")
+                    println("1. 지불하기 2. 장바구니 취소")
+                    var select = readln().toInt()
+                    var bags = "${iceMenus[Number - 1].Name} | ${iceMenus[Number - 1].Price}"
+                    if (select == 2) {
+                        bagList.remove(bags)
+                        println("취소되었습니다. 감사합니다.")
+                        exitProcess(0)
+                    } else if (select == 1) {
+                        println("지불하기를 선택하셨습니다")
+                    } else {
+                        println("\u001B[31m잘못된 번호를 입력하셨어요. 처음부터 다시 선택해주세요!\u001B[0m")
+                        break
+                    }
+
                     var myPrice = readln().toInt()
                     myPrice -= iceMenus[Number - 1].Price
                     var balance = iceMenus[Number - 1].Price
 
-                    if (myPrice>= Price){
+                    if (myPrice >= Price) {
                         println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
-                    }else println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                    } else {
+                        println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                        exitProcess(0)
+                    }
 
                     println("1. 바로 주문하기   2. 메뉴판 다시 보기")
                     var choice = readln().toInt()
-                    if(choice == 1){
+                    if (choice == 1) {
                         println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
                         exitProcess(0)
-                    }else 0
+                    } else 0
                 } else println("다른 메뉴를 선택해주세요.")
 
             } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
-
         }
         return 0
     }
@@ -270,21 +324,40 @@ open class Drinks() : AbstractMenu() {
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m ${drinkMenus[Number - 1].Price}원")
 
+                    println("1. 지불하기 2. 장바구니 취소")
+                    var select = readln().toInt()
+                    var bags = "${drinkMenus[Number - 1].Name} | ${drinkMenus[Number - 1].Price}"
+
+                    if (select == 2) {
+                        bagList.remove(bags)
+                        println("취소되었습니다. 감사합니다.")
+                        exitProcess(0)
+                    } else if (select == 1) {
+                        println("지불하기를 선택하셨습니다")
+                    } else {
+                        println("\u001B[31m잘못된 번호를 입력하셨어요. 처음부터 다시 선택해주세요!\u001B[0m")
+                        break
+                    }
+
                     println("지불할 금액을 작성하세요")
+
                     var myPrice = readln().toInt()
                     myPrice -= drinkMenus[Number - 1].Price
                     var balance = drinkMenus[Number - 1].Price
 
-                    if (myPrice>= Price){
+                    if (myPrice >= Price) {
                         println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
-                    }else println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                    } else {
+                        println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                        exitProcess(0)
+                    }
 
                     println("1. 바로 주문하기   2. 메뉴판 다시 보기")
                     var choice = readln().toInt()
-                    if(choice == 1){
+                    if (choice == 1) {
                         println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
                         exitProcess(0)
-                    }else 0
+                    } else 0
                 } else println("다른 메뉴를 선택해주세요.")
 
             } else {
@@ -295,7 +368,7 @@ open class Drinks() : AbstractMenu() {
     }
 }
 
-class Beer() : AbstractMenu(){
+class Beer() : AbstractMenu() {
 
     constructor(Number: Int, Name: String, Price: Int, Content: String) : this() {
         super.Number = Number
@@ -332,21 +405,38 @@ class Beer() : AbstractMenu(){
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m 가격: ${beerMenus[Number - 1].Price}원")
 
+                    println("1. 지불하기 2. 장바구니 취소")
+                    var select = readln().toInt()
+                    var bags = "${beerMenus[Number - 1].Name} | ${beerMenus[Number - 1].Price}"
+                    if (select == 2) {
+                        bagList.remove(bags)
+                        println("취소되었습니다. 감사합니다.")
+                        exitProcess(0)
+                    } else if (select == 1) {
+                        println("지불하기를 선택하셨습니다")
+                    } else {
+                        println("\u001B[31m잘못된 번호를 입력하셨어요. 처음부터 다시 선택해주세요!\u001B[0m")
+                        break
+                    }
+
                     println("지불할 금액을 작성하세요")
                     var myPrice = readln().toInt()
                     myPrice -= beerMenus[Number - 1].Price
                     var balance = beerMenus[Number - 1].Price
 
-                    if (myPrice>= Price){
+                    if (myPrice >= Price) {
                         println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
-                    }else println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                    } else {
+                        println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
+                        exitProcess(0)
+                    }
 
                     println("1. 바로 주문하기   2. 메뉴판 다시 보기")
                     var choice = readln().toInt()
-                    if(choice == 1){
+                    if (choice == 1) {
                         println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
                         exitProcess(0)
-                    }else 0
+                    } else 0
                 } else println("다른 메뉴를 선택해주세요.")
 
             } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
@@ -354,7 +444,3 @@ class Beer() : AbstractMenu(){
         return 0
     }
 }
-
-
-
-
