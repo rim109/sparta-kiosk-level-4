@@ -261,7 +261,8 @@ open class Ice() : AbstractMenu() {
                         println("\u001B[31m잘못된 번호를 입력하셨어요. 처음부터 다시 선택해주세요!\u001B[0m")
                         break
                     }
-
+                    
+                    println("지불할 금액을 작성하세요")
                     var myPrice = readln().toInt()
                     myPrice -= iceMenus[Number - 1].Price
                     var balance = iceMenus[Number - 1].Price
@@ -340,7 +341,6 @@ open class Drinks() : AbstractMenu() {
                     }
 
                     println("지불할 금액을 작성하세요")
-
                     var myPrice = readln().toInt()
                     myPrice -= drinkMenus[Number - 1].Price
                     var balance = drinkMenus[Number - 1].Price
