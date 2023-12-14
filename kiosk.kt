@@ -1,6 +1,5 @@
 package kiosk
 
-import java.awt.Choice
 import kotlin.system.exitProcess
 
 fun main() {
@@ -71,9 +70,6 @@ open class Kiosk {
         }
     }
 
-    // 예외처리를 하려고 이를 처음에는 프린트를 해서 넘겨주려고 했는데... 위에 else 부분에 걸려 추가적으로 프린트 메시지가 나와서
-    // 번호를 추가적으로 넣어 경고메시지와 메인 메뉴를 자동으로 나오게 했다
-
     fun initKiosk() {
         burgerMenu.add(Hamburger(1, "ShackBurger", 6900, "토마토, 양상추, 쉑소스가 토핑된 치즈버거"))
         burgerMenu.add(Hamburger(2, "SmokeShack", 8900, "베이컨, 체리 페퍼에 쉑소스가 토핑된 치즈버거"))
@@ -104,7 +100,7 @@ open class Kiosk {
         beerMenu.add(Beer(0, "뒤로가기", 0, "다시 메인 메뉴로 이동한다"))
     }
 }
-// arraylist을 이용해서 각 메뉴들을 배열하여 데이터화해서 가져오는 식으로 했다. 이것들을 일일히 다 적어내면 하드 코딩이므로,,,
+
 abstract class AbstractMenu {
     abstract fun choose(burgerMenus: ArrayList<AbstractMenu>): Int
     var Number = 0
@@ -112,8 +108,6 @@ abstract class AbstractMenu {
     var Price = 0
     var Content = ""
 }
-// 추상화 클래스는 범위만 정해주는 거기 때문에 텍스트를 웬만해선 추가적으로 넣지 않는다.
-//다형성으로 burgerMenus: ArrayList<AbstractMenu>을 넣어주면 된다고 했다.
 
 class Hamburger() : AbstractMenu() {
     constructor(Number: Int, Name: String, Price: Int, Content: String) : this() {
@@ -122,8 +116,6 @@ class Hamburger() : AbstractMenu() {
         super.Price = Price
         super.Content = Content
     }
-    //super은 상속받는 부모클래스다
-    // 이런식으로 하는것은 부 생성자인데 이는 하나이상을 만들 수 있다. 개인 별로 다 다르기 때문에 이건 따로 추상화 객체로 뺄 수 없다.
 
     override fun choose(burgerMenus: ArrayList<AbstractMenu>): Int {
         extracted(burgerMenus)
@@ -141,8 +133,6 @@ class Hamburger() : AbstractMenu() {
                 println(b.Content)
                 println("-------------------------------------------")
             }
-            // 객체가 다 달라서 이건 클래스를 따로 빼서 묶을 수가 없다.
-            //다음에는 객체가 같을 때 묶는거 해봐야겠다(컨트롤 알트 m)
 
             var Number = readln().toInt()
 
@@ -180,8 +170,6 @@ class Hamburger() : AbstractMenu() {
 
         }
     }
-//각 수들을 넘어오게 헀다. 결국 각 메뉴스에서 담아져서 오는거니까
-
 }
 
 open class Ice() : AbstractMenu() {
