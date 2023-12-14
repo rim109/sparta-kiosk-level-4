@@ -12,8 +12,6 @@ fun main() {
     val mainDr = Drinks()
     val mainBe = Beer()
 
-
-
     while (true) {
 
         when (menuPan) {
@@ -58,7 +56,7 @@ open class Kiosk {
             println("\u001B[32m아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\u001B[0m")
             println("\u001B[32m[ Menu ]\u001B[0m")
             println(
-                "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
+                        "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
                         "2. Forzen Custard  | 매장에서 신선하게 만드는 아이스크림\n" +
                         "3. Drinks          | 매장에서 직접 만드는 음료\n" +
                         "4. Beer            | 뉴욕 브루클린 브루어리에서 양조한 맥주\n" +
@@ -100,13 +98,14 @@ open class Kiosk {
         beerMenu.add(Beer(0, "뒤로가기", 0, "다시 메인 메뉴로 이동한다"))
     }
 }
-
 abstract class AbstractMenu {
     abstract fun choose(burgerMenus: ArrayList<AbstractMenu>): Int
     var Number = 0
     var Name = ""
     var Price = 0
     var Content = ""
+    val bagList = arrayListOf<String>()
+
 }
 
 class Hamburger() : AbstractMenu() {
@@ -116,7 +115,7 @@ class Hamburger() : AbstractMenu() {
         super.Price = Price
         super.Content = Content
     }
-
+ 
     override fun choose(burgerMenus: ArrayList<AbstractMenu>): Int {
         extracted(burgerMenus)
         return 0
@@ -145,6 +144,8 @@ class Hamburger() : AbstractMenu() {
                 var answer = readln().toString()
                 if (answer == "네") {
                     println("\u001B[32m[ Orders ]\u001B[0m")
+                    var bag = "${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}"
+                    bagList.add(bag)
                     println("${Number} | ${burgerMenus[Number - 1].Name} | ${burgerMenus[Number - 1].Price}원 | ${burgerMenus[Number - 1].Content}| (이/가) 장바구니에 추가되었습니다.")
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m ${burgerMenus[Number - 1].Price}원")
@@ -167,7 +168,6 @@ class Hamburger() : AbstractMenu() {
                 } else println("다른 메뉴를 선택해주세요.")
 
             } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
-
         }
     }
 }
@@ -203,6 +203,8 @@ open class Ice() : AbstractMenu() {
                 var answer = readln().toString()
                 if (answer == "네") {
                     println("\u001B[32m[ Orders ]\u001B[0m")
+                    var bag = "${iceMenus[Number - 1].Name} | ${iceMenus[Number - 1].Price}"
+                    bagList.add(bag)
                     println("${Number} | ${iceMenus[Number - 1].Name} | ${iceMenus[Number - 1].Price}원 | ${iceMenus[Number - 1].Content} |(이/가) 장바구니에 추가되었습니다.")
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m ${iceMenus[Number - 1].Price}원")
@@ -262,6 +264,8 @@ open class Drinks() : AbstractMenu() {
                 var answer = readln().toString()
                 if (answer == "네") {
                     println("\u001B[32m[ Orders ]\u001B[0m")
+                    var bag = "${drinkMenus[Number - 1].Name} | ${drinkMenus[Number - 1].Price}"
+                    bagList.add(bag)
                     println("${Number} | ${drinkMenus[Number - 1].Name} | ${drinkMenus[Number - 1].Price}원 | ${drinkMenus[Number - 1].Content} |(이/가) 장바구니에 추가되었습니다.")
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m ${drinkMenus[Number - 1].Price}원")
@@ -286,11 +290,9 @@ open class Drinks() : AbstractMenu() {
             } else {
                 println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
             }
-
         }
         return 0
     }
-
 }
 
 class Beer() : AbstractMenu(){
@@ -324,6 +326,8 @@ class Beer() : AbstractMenu(){
                 var answer = readln().toString()
                 if (answer == "네") {
                     println("\u001B[32m[ Orders ]\u001B[0m")
+                    var bag = "${beerMenus[Number - 1].Name} | ${beerMenus[Number - 1].Price}"
+                    bagList.add(bag)
                     println("${Number} | ${beerMenus[Number - 1].Name} | ${beerMenus[Number - 1].Price}원 | ${beerMenus[Number - 1].Content}|(이/가) 장바구니에 추가되었습니다.")
                     println("----------------------------------------------------------------------------------------------")
                     println("\u001B[32m[ Total ]\u001B[0m 가격: ${beerMenus[Number - 1].Price}원")
@@ -346,11 +350,9 @@ class Beer() : AbstractMenu(){
                 } else println("다른 메뉴를 선택해주세요.")
 
             } else println("\u001B[31m잘못된 번호를 입력하셨어요. 다시 입력해주세요!\u001B[0m")
-
         }
         return 0
     }
-
 }
 
 
