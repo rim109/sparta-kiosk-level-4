@@ -1,5 +1,7 @@
 package kiosk
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
 
 fun main() {
@@ -59,7 +61,7 @@ open class Kiosk {
             println("\u001B[32m아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\u001B[0m")
             println("\u001B[32m[ Menu ]\u001B[0m")
             println(
-                "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
+                        "1. Burgers         | 앵거스 비프 통살을 다져만든 버거\n" +
                         "2. Forzen Custard  | 매장에서 신선하게 만드는 아이스크림\n" +
                         "3. Drinks          | 매장에서 직접 만드는 음료\n" +
                         "4. Beer            | 뉴욕 브루클린 브루어리에서 양조한 맥주\n" +
@@ -120,7 +122,7 @@ class Hamburger() : AbstractMenu() {
         super.Price = Price
         super.Content = Content
     }
-    
+
     override fun choose(burgerMenus: ArrayList<AbstractMenu>): Int {
         extracted(burgerMenus)
         return 0
@@ -176,20 +178,31 @@ class Hamburger() : AbstractMenu() {
                         var myPrice = readln().toInt()
                         myPrice -= burgerMenus[Number - 1].Price
                         var balance = burgerMenus[Number - 1].Price
+                        var localDateTime: String? = LocalDateTime.now()
+                            .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
+
                         if (myPrice >= Price) {
-                            println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("\u001B[32m[ Change ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("-------------------------------------------")
+                            println("\u001B[43m결제완료\u001B[0m")
+                            println(localDateTime.toString())
                         } else {
                             println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
                             exitProcess(0)
                         }
 
-                        println("원하시는 번호를 입력해주세요!")
-                        println("1. 바로 주문하기   2. 메뉴판 다시 보기")
+                        println("-------------------------------------------")
+                        println("메뉴판을 더 보시겠습니까?!")
+                        println("1. 네   2. 아니요")
                         var choice = readln().toInt()
-                        if (choice == 1) {
-                            println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
-                            exitProcess(0)
-                        } else 0
+                        try {
+                            if (choice == 2) {
+                                println("주문해주셔서 감사합니다! 또 찾아와주세요")
+                                exitProcess(0)
+                            } else 0
+                        } catch (e: NumberFormatException) {
+                            return println("\u001B[31m잘못된 입력값입니다. 처음부터 다시 입력해주세요\u001B[0m")
+                        }
                     } else if (answer == "아니오") {
                         println("다른 메뉴를 선택해주세요.")
                     } else println("\u001B[31m잘못된 입력값을 입력하셨어요. 다시 입력해주세요!\u001B[0m")
@@ -259,21 +272,31 @@ open class Ice() : AbstractMenu() {
                         var myPrice = readln().toInt()
                         myPrice -= iceMenus[Number - 1].Price
                         var balance = iceMenus[Number - 1].Price
+                        var localDateTime: String? = LocalDateTime.now()
+                            .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
 
                         if (myPrice >= Price) {
-                            println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("\u001B[32m[ Change ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("-------------------------------------------")
+                            println("\u001B[43m결제완료\u001B[0m")
+                            println(localDateTime.toString())
                         } else {
                             println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
                             exitProcess(0)
                         }
 
-                        println("원하시는 번호를 입력해주세요!")
-                        println("1. 바로 주문하기   2. 메뉴판 다시 보기")
+                        println("-------------------------------------------")
+                        println("메뉴판을 더 보시겠습니까?!")
+                        println("1. 네   2. 아니요")
                         var choice = readln().toInt()
-                        if (choice == 1) {
-                            println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
-                            exitProcess(0)
-                        } else 0
+                        try {
+                            if (choice == 2) {
+                                println("주문해주셔서 감사합니다! 또 찾아와주세요")
+                                exitProcess(0)
+                            } else 0
+                        } catch (e: NumberFormatException) {
+                            return 9
+                        }
                     } else if (answer == "아니오") {
                         println("다른 메뉴를 선택해주세요.")
                     } else println("\u001B[31m잘못된 입력값을 입력하셨어요. 다시 입력해주세요!\u001B[0m")
@@ -344,21 +367,31 @@ open class Drinks() : AbstractMenu() {
                         var myPrice = readln().toInt()
                         myPrice -= drinkMenus[Number - 1].Price
                         var balance = drinkMenus[Number - 1].Price
+                        var localDateTime: String? = LocalDateTime.now()
+                            .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
 
                         if (myPrice >= Price) {
-                            println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("\u001B[32m[ Change ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("-------------------------------------------")
+                            println("\u001B[43m결제완료\u001B[0m")
+                            println(localDateTime.toString())
                         } else {
                             println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
                             exitProcess(0)
                         }
 
-                        println("원하시는 번호를 입력해주세요!")
-                        println("1. 바로 주문하기   2. 메뉴판 다시 보기")
+                        println("-------------------------------------------")
+                        println("메뉴판을 더 보시겠습니까?!")
+                        println("1. 네   2. 아니요")
                         var choice = readln().toInt()
-                        if (choice == 1) {
-                            println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
-                            exitProcess(0)
-                        } else 0
+                        try {
+                            if (choice == 2) {
+                                println("주문해주셔서 감사합니다! 또 찾아와주세요")
+                                exitProcess(0)
+                            } else 0
+                        } catch (e: NumberFormatException) {
+                            return 9
+                        }
                     } else if (answer == "아니오") {
                         println("다른 메뉴를 선택해주세요.")
                     } else println("\u001B[31m잘못된 입력값을 입력하셨어요. 다시 입력해주세요!\u001B[0m")
@@ -429,21 +462,31 @@ class Beer() : AbstractMenu() {
                         var myPrice = readln().toInt()
                         myPrice -= beerMenus[Number - 1].Price
                         var balance = beerMenus[Number - 1].Price
+                        var localDateTime: String? = LocalDateTime.now()
+                            .format(DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mm:ss a"))
 
                         if (myPrice >= Price) {
-                            println("\u001B[32m[ Total ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("\u001B[32m[ Change ]\u001B[0m 거스름돈은 ${myPrice}원 입니다. 감사합니다")
+                            println("-------------------------------------------")
+                            println("\u001B[43m결제완료\u001B[0m")
+                            println(localDateTime.toString())
                         } else {
                             println("총 가격은 ${balance}원 이므로 ${myPrice}원이 부족하여 작성하신 금액으로는 계산할 수 없습니다. 다시 시도해주세요! 감사합니다")
                             exitProcess(0)
                         }
 
-                        println("원하시는 번호를 입력해주세요!")
-                        println("1. 바로 주문하기   2. 메뉴판 다시 보기")
+                        println("-------------------------------------------")
+                        println("메뉴판을 더 보시겠습니까?!")
+                        println("1. 네   2. 아니요")
                         var choice = readln().toInt()
-                        if (choice == 1) {
-                            println("주문되셨습니다. 감사합니다. 다음에 또 와주세요")
-                            exitProcess(0)
-                        } else 0
+                        try {
+                            if (choice == 2) {
+                                println("주문해주셔서 감사합니다! 또 찾아와주세요")
+                                exitProcess(0)
+                            } else 0
+                        } catch (e: NumberFormatException) {
+                            return 9
+                        }
                     } else if (answer == "아니오") {
                         println("다른 메뉴를 선택해주세요.")
                     } else println("\u001B[31m잘못된 입력값을 입력하셨어요. 다시 입력해주세요!\u001B[0m")
